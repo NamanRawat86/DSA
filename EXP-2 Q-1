@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Node* head = NULL;
+
+void insertBeginning(int val) {
+    struct Node* newNode = malloc(sizeof(struct Node));
+    newNode->data = val;
+    newNode->next = head;
+    head = newNode;
+}
+
+void insertEnd(int val) {
+    struct Node* newNode = malloc(sizeof(struct Node));
+    newNode->data = val;
+    newNode->next = NULL;
+    if (head == NULL) { head = newNode; return; }
+    struct Node* temp = head;
+    while (temp->next) temp = temp->next;
+    temp->next = newNode;
+}
+
+void insertNth(int pos, int val) {
+    struct Node* newNode = malloc(sizeof(struct Node));
+    newNode->data = val;
+    if (pos == 1) { newNode->next = head; head = newNode; return; }
+    struct Node* temp = head;
+    for (int i=1; i<pos-1 && temp; i++) temp = temp->next;
+    if (!temp) return;
+    newNode->next = temp->next;
+    temp->next = newNode;
+}
+
+void deleteNode(int val) {
+    struct Node* temp = head, *prev = NULL;
+    while (temp && temp->data != val) { prev = temp; temp = temp->next; }
+    if (!temp) return;
+    if (!prev) head = temp->next;
+    else prev->next = temp->next;
+    free(temp);
+}
+
+void display() {
+    struct Node* temp = head;
+    while (temp) { printf("%d -> ", temp->data); temp = temp->next; }
+    printf("NULL\n");
+}
+
+int main() {
+    insertBeginning(10);
+    insertEnd(20);
+    insertNth(2, 15);
+    display();
+    deleteNode(15);
+    display();
+    return 0;
+}
