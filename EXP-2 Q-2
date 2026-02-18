@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Node* last = NULL;
+
+void insertEnd(int val) {
+    struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
+    newNode->data = val;
+    if (last == NULL) {
+        last = newNode;
+        last->next = last;
+    } else {
+        newNode->next = last->next;
+        last->next = newNode;
+        last = newNode;
+    }
+}
+
+void deleteNode(int val) {
+    if (!last) return;
+    struct Node* curr = last->next;
+    struct Node* prev = last;
+    do {
+        if (curr->data == val) {
+            if (curr == last && curr->next == last) last = NULL;
+            else {
+                prev->next = curr->next;
+                if (curr == last) last = prev;
+            }
+            free(curr);
+            return;
+        }
+        prev = curr;
+        curr = curr->next;
+    } while (curr != last->next);
+}
+
+void display() {
+    if (!last) { printf("List empty\n"); return; }
+    struct Node* temp = last->next;
+    do {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    } while (temp != last->next);
+    printf("(back to start)\n");
+}
+
+int main() {
+    insertEnd(10);
+    insertEnd(20);
+    insertEnd(30);
+    display();
+    deleteNode(20);
+    display();
+    return 0;
+}
